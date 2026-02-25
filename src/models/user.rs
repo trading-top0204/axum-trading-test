@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
-use uuid::Uuid;
 use utoipa::ToSchema;
+use uuid::Uuid;
 
 #[derive(Debug, FromRow, Serialize, ToSchema)]
 pub struct User {
@@ -22,6 +22,13 @@ pub struct RegisterRequest {
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
+}
+
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct OAuthLoginRequest {
+    pub provider: String,
+    pub provider_user_id: String,
+    pub email: String,
 }
 
 #[derive(Debug, Serialize, ToSchema)]
