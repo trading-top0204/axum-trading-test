@@ -14,7 +14,7 @@ use std::net::SocketAddr;
 use tower_http::cors::{Any, CorsLayer};
 
 use config::Config;
-use handlers::{get_orders, get_portfolio, get_stocks, login, place_order, register};
+use handlers::{get_orders, get_portfolio, get_stocks, login, oauth_login, place_order, register};
 use state::AppState;
 
 #[tokio::main]
@@ -40,6 +40,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/api/health", get(health))
         .route("/api/auth/register", post(register))
         .route("/api/auth/login", post(login))
+        .route("/api/auth/oauth", post(oauth_login))
         .route("/api/stocks", get(get_stocks))
         .route("/api/portfolio", get(get_portfolio))
         .route("/api/orders", get(get_orders))
@@ -50,11 +51,7 @@ async fn main() -> anyhow::Result<()> {
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     println!("Server listening on http://{}", addr);
 
-    axum::serve(
-        tokio::net::TcpListener::bind(addr).await?,
-        app,
-    )
-    .await?;
+    axum::serve(tokio::net::TcpListener::bind(addr).await?, app).await?;
 
     Ok(())
 }
